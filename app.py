@@ -63,11 +63,25 @@ def read_python_file(file_path):
         print(f"Error: {e}")
         return None
 
-def save_to_python_file(text, python_file_path):
-    code = text.split("```python")[-1].split("```")[0]
+def save_to_python_file(code, python_file_path):
+    system_message = docstring_generator_prompt()
+    user_message = f"""{code}"""
+    results = run_openai(messages=openai_messages(system_message, user_message))
+
+
+    code = results.split("```python")[-1].split("```")[0]
     with open(python_file_path, 'w', encoding='utf-8') as python_file:
         python_file.write(code)
     print(f'Python code successfully written to: {python_file_path}')
+
+def save_markdown_readme(code, readme_path):
+    system_message = markdown_document_prompt()
+    user_message = f"""{code}"""
+    results = run_openai(messages=openai_messages(system_message, user_message))
+
+    with open(readme_path, 'w', encoding='utf-8') as file:
+        file.write(results)
+    print(f'Readme successfully written to: {readme_path}')
 
 def markdown_document_prompt():
     system_message = """
@@ -132,10 +146,7 @@ def docstring_generator_prompt():
     return system_message
 
 if __name__ == "__main__":
-    code = read_python_file(file_path=r"C:\Users\mike_\OneDrive\Documents\OpenAI and Python\ImageAnalysisOPENAI\app.py")
-    system_message = markdown_document_prompt()
-    user_message = f"""{code}"""
-    # results = call_openai_api(messages=openai_messages(system_message, user_message))
-    results = run_openai(messages=openai_messages(system_message, user_message))
-    print(results)
-    save_to_python_file(results, "./output/new_app.py")
+    file_path = Path(r"C:\Users\mike_\OneDrive\Documents\OpenAI and Python\ImageAnalysisOPENAI\app.py")
+    code = read_python_file(file_path=file_path)
+    save_to_python_file(code, file_path.parent/"app-docstring.py")
+    save_markdown_readme(code, file_path.parent/"README.md")
