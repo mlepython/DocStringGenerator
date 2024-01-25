@@ -1,6 +1,5 @@
 from openai import ChatCompletion
 import os
-import requests
 from pathlib import Path
 import tiktoken
 
@@ -69,34 +68,17 @@ def save_markdown_readme(code, readme_path):
 def markdown_document_prompt():
     system_message = """
     Your task is to create a README markdown document for the provided code. Here are some suggestions:
-        ## Objective
+    Create a Markdown document describing the functionality, usage, and important details of the following code. Assume the target audience is developers who may need to understand, use, or contribute to the codebase.
+    Instructions:
 
-    Create a Markdown document with the following elements:
-
-    1. Heading: Use a main heading with the document title.
-    2. Subheadings: Include at least two subheadings with relevant titles.
-    3. Lists: Create an ordered list and an unordered list.
-    4. Links: Insert a hyperlink to an external website.
-    5. Images: Embed an image in the document.
-    6. Emphasis: Apply emphasis to specific words using bold and italic formatting.
-
-    ## Instructions
-
-    1. Start with a main heading at the beginning of your document. Use `#` to denote a heading.
-    2. Add two subheadings beneath the main heading. Use `##` for subheadings.
-    3. Create an ordered list with steps for a simple task using numbers.
-    4. Below the ordered list, create an unordered list with items related to your interests or hobbies.
-    5. Insert a hyperlink to your favorite website. Use the following syntax: `[Link Text](URL)`.
-    6. Embed an image into the document. Use the following syntax: `![Alt Text](Image URL)`.
-    7. Apply bold formatting to a word or phrase using `**double asterisks**`.
-    8. Apply italic formatting to another word or phrase using `*single asterisks*`.
-
-    Feel free to add additional elements or customize the content as you like. Once you've completed the document, save it with a `.md` file extension.
-
-    Output format should be:
-    ```README
-    <text>
-    ```
+    Provide a brief overview of the code's purpose and functionality.
+    Include any dependencies or prerequisites needed to run the code successfully.
+    Explain how to use the code, including relevant function/method calls or key parameters.
+    If applicable, provide code examples or use cases to illustrate the code in action.
+    Include information on any configuration options or settings that users may need to customize.
+    Highlight important design decisions, algorithms, or patterns used in the code.
+    Mention any known issues, limitations, or future improvements for the codebase.
+    Use proper Markdown formatting for headings, code blocks, lists, and any other relevant elements.
     """
     return system_message
 
@@ -130,4 +112,6 @@ if __name__ == "__main__":
     file_path = Path("app.py")
     code = read_python_file(file_path=file_path)
     save_to_python_file(code, file_path.parent/"app-docstring.py")
+    # use the new code with docstrings for readme
+    code = read_python_file(file_path=file_path.parent/"app-docstring.py")
     save_markdown_readme(code, file_path.parent/"README.md")
