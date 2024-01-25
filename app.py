@@ -69,9 +69,41 @@ def save_to_python_file(text, python_file_path):
         python_file.write(code)
     print(f'Python code successfully written to: {python_file_path}')
 
+def markdown_document_prompt():
+    system_message = """
+    Your task is to create a README markdown document for the provided code. Here are some suggestions:
+        ## Objective
 
-if __name__ == "__main__":
-    code = read_python_file(file_path=r"C:\Users\mike_\OneDrive\Documents\OpenAI and Python\ImageAnalysisOPENAI\app.py")
+    Create a Markdown document with the following elements:
+
+    1. Heading: Use a main heading with the document title.
+    2. Subheadings: Include at least two subheadings with relevant titles.
+    3. Lists: Create an ordered list and an unordered list.
+    4. Links: Insert a hyperlink to an external website.
+    5. Images: Embed an image in the document.
+    6. Emphasis: Apply emphasis to specific words using bold and italic formatting.
+
+    ## Instructions
+
+    1. Start with a main heading at the beginning of your document. Use `#` to denote a heading.
+    2. Add two subheadings beneath the main heading. Use `##` for subheadings.
+    3. Create an ordered list with steps for a simple task using numbers.
+    4. Below the ordered list, create an unordered list with items related to your interests or hobbies.
+    5. Insert a hyperlink to your favorite website. Use the following syntax: `[Link Text](URL)`.
+    6. Embed an image into the document. Use the following syntax: `![Alt Text](Image URL)`.
+    7. Apply bold formatting to a word or phrase using `**double asterisks**`.
+    8. Apply italic formatting to another word or phrase using `*single asterisks*`.
+
+    Feel free to add additional elements or customize the content as you like. Once you've completed the document, save it with a `.md` file extension.
+
+    Output format should be:
+    ```README
+    <text>
+    ```
+    """
+    return system_message
+
+def docstring_generator_prompt():
     system_message = """Your task will be to generate docstrings and add comments to a provided python code.
     You will also spcifiy in the define function statement for each input the desired type and the desired output type for all functions.
     Do not modify the code. It MUST stay in its current form. Insert the docstrings for each function and add some short comments if necessary.
@@ -97,6 +129,11 @@ if __name__ == "__main__":
     return area
     ```
     """
+    return system_message
+
+if __name__ == "__main__":
+    code = read_python_file(file_path=r"C:\Users\mike_\OneDrive\Documents\OpenAI and Python\ImageAnalysisOPENAI\app.py")
+    system_message = markdown_document_prompt()
     user_message = f"""{code}"""
     # results = call_openai_api(messages=openai_messages(system_message, user_message))
     results = run_openai(messages=openai_messages(system_message, user_message))
