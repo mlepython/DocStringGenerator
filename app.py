@@ -2,47 +2,30 @@ from openai import ChatCompletion
 import os
 import requests
 from pathlib import Path
+import tiktoken
 
 
-MODEL_NAME = "gpt-4-0613"
+# MODEL_NAME = "gpt-4-0613"
+MODEL_NAME = "gpt-3.5-turbo-1106"
 MAX_TOKENS = 1500
-api_url = 'https://api.openai.com/v1/chat/completions'
 api_key = os.getenv("OPENAI_API_KEY")
-# client = OpenAI()
+
+def num_tokens_from_string(string: str, encoding_name="cl100k_base") -> int:
+    """Returns the number of tokens in a text string."""
+    encoding = tiktoken.get_encoding(encoding_name)
+    num_tokens = len(encoding.encode(string))
+    return num_tokens
+
+
 def run_openai(messages: list):
+        max_tokens = num_tokens_from_string(str(messages))
+        print(max_tokens)
         response = ChatCompletion.create(
             model=MODEL_NAME,
             messages=messages,
-            max_tokens=MAX_TOKENS
+            max_tokens=int(max_tokens*1.5)
         )
         return response.choices[0].message.content
-
-def call_openai_api(messages):
-    data = {
-        'messages': messages,
-        'max_tokens': MAX_TOKENS,
-        'model': MODEL_NAME
-    }
-
-    headers = {
-        'Content-Type': 'application/json',
-        'Authorization': f'Bearer {api_key}'
-    }
-
-    try:
-        response = requests.post(api_url, json=data, headers=headers)
-        if response.status_code == 200:
-            result = response.json()
-            print('OpenAI Response:', result)
-            openai_result = result['choices'][0].get('message', {}).get('content')
-            return openai_result
-        else:
-            print(f"Error: {response.status_code}, {response.text}")
-            return None
-    except Exception as e:
-        print(f"Exception: {e}")
-        return None
-
 
 def openai_messages(system_message="", user_message=""):
      prompt = [
@@ -68,10 +51,10 @@ def save_to_python_file(code, python_file_path):
     user_message = f"""{code}"""
     results = run_openai(messages=openai_messages(system_message, user_message))
 
-
-    code = results.split("```python")[-1].split("```")[0]
+    code = results.split("```python",1)[-1][::-1].split("```",1)[-1][::-1]
     with open(python_file_path, 'w', encoding='utf-8') as python_file:
         python_file.write(code)
+    print(results)
     print(f'Python code successfully written to: {python_file_path}')
 
 def save_markdown_readme(code, readme_path):
@@ -126,8 +109,7 @@ def docstring_generator_prompt():
     ```python
     <python code>
     ```
-    Here is an example output:
-    ```python
+    Here is an example of a docstring for a function:
     def calculate_area_of_rectangle(length, width):
     '''
     Calculate the area of a rectangle.
@@ -141,12 +123,11 @@ def docstring_generator_prompt():
     '''
     area = length * width
     return area
-    ```
     """
     return system_message
 
 if __name__ == "__main__":
-    file_path = Path(r"C:\Users\mike_\OneDrive\Documents\OpenAI and Python\ImageAnalysisOPENAI\app.py")
+    file_path = Path("app.py")
     code = read_python_file(file_path=file_path)
     save_to_python_file(code, file_path.parent/"app-docstring.py")
     save_markdown_readme(code, file_path.parent/"README.md")
