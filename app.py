@@ -5,9 +5,9 @@ import tiktoken
 
 
 class CodeCleaner():
-    def __init__(self) -> None:
+    def __init__(self, api_key=None) -> None:
         self.model_name = "gpt-3.5-turbo-1106"
-        self.api_key = os.getenv("OPENAI_API_KEY")
+        self.api_key = api_key or os.getenv("OPENAI_API_KEY")
         self.code = ""
 
         if not self.api_key:
@@ -118,7 +118,7 @@ if __name__ == "__main__":
     openai_code_cleaner.read_python_file(file_path)
     
     # Example: Convert to docstrings only
-    openai_code_cleaner.convert_to_docstrings(python_output_file_path="app-docstring.py")
+    # openai_code_cleaner.convert_to_docstrings(python_output_file_path="app-docstring.py")
 
     # Example: Create a readme document
     openai_code_cleaner.read_python_file(file_path="app-docstring.py")

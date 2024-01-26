@@ -1,67 +1,60 @@
-# OpenAI Code Cleaner
+# CodeCleaner
 
-The OpenAI Code Cleaner is a Python class that utilizes the OpenAI ChatCompletion API to process and modify Python code. It provides functionality to generate docstrings for Python code and create a Markdown document based on the code's content.
+The **CodeCleaner** class is designed to assist in modifying and documenting Python code using OpenAI's ChatCompletion for generating docstrings and creating a README markdown document.
 
-## Prerequisites
+## Functionality
+The CodeCleaner class provides the following functionalities:
+1. Cleaning and modifying Python code:
+    - Reading the content of a Python file.
+    - Generating docstrings for the provided Python code and writing the modified code to a new file.
+2. Creating a README markdown document for the provided Python code.
 
-1. OpenAI API Key: An environment variable `OPENAI_API_KEY` containing the OpenAI API key is required for authentication.
-
-2. Dependencies:
-   - `openai` library
-   - `tiktoken` library
-   - `os` library
-   - `pathlib` library
+## Dependencies
+In order to run the code successfully, the following dependencies are required:
+- `openai` library
+- Environmental variable `OPENAI_API_KEY` set to provide the OpenAI API key
 
 ## Usage
+1. **Reading Python File**:
+    ```python
+    openai_code_cleaner.read_python_file(file_path)
+    ```
+    This function reads the content of a Python file specified by `file_path`.
 
-1. **Initializing the CodeCleaner Class**:
-   To initialize the `CodeCleaner` class, create an instance of the class, which sets the model name, API key, and code attributes.
+2. **Convert to Docstrings**:
+    ```python
+    openai_code_cleaner.convert_to_docstrings(python_output_file_path)
+    ```
+    This function generates docstrings for the provided Python code and writes the modified code to a new file specified by `python_output_file_path`.
 
-   ```python
-   openai_code_cleaner = CodeCleaner()
-   ```
+3. **Convert to Markdown**:
+    ```python
+    openai_code_cleaner.convert_to_markdown(readme_path)
+    ```
+    This function generates a README markdown document for the provided Python code and writes it to a file specified by `readme_path`.
 
-2. **Converting Python Code to Docstrings**:
-   Use the `convert_to_docstrings` method to generate docstrings for the provided python code and write the modified code to a new file.
-
-   ```python
-   openai_code_cleaner.read_python_file(file_path)
-   openai_code_cleaner.convert_to_docstrings(python_output_file_path="app-docstring.py")
-   ```
-
-3. **Creating a Readme Document**:
-   The `convert_to_markdown` method generates a readme markdown document for the provided python code.
-
-   ```python
-   openai_code_cleaner.read_python_file(file_path="app-docstring.py")
-   openai_code_cleaner.convert_to_markdown(readme_path="README.md")
-   ```
-
-## Example Use Cases
-
-### Converting to Docstrings
-
+### Example:
 ```python
-openai_code_cleaner.read_python_file(Path("app.py"))
+from CodeCleaner import CodeCleaner
+from pathlib import Path
+
+openai_code_cleaner = CodeCleaner()
+file_path = Path("app.py")
+
+# Read python file
+openai_code_cleaner.read_python_file(file_path)
+
+# Convert to docstrings only
 openai_code_cleaner.convert_to_docstrings(python_output_file_path="app-docstring.py")
-```
 
-### Creating a Readme Document
-
-```python
+# Create a readme document
 openai_code_cleaner.read_python_file(file_path="app-docstring.py")
 openai_code_cleaner.convert_to_markdown(readme_path="README.md")
 ```
 
-## Important Note
-
-The code relies on the OpenAI ChatCompletion API and the `tiktoken` library for tokenization, which is utilized for obtaining the number of tokens in a text string.
-
-## Design Decisions
-
-The `CodeCleaner` class encapsulates the functionality to interact with the OpenAI ChatCompletion API and perform operations on Python code. It uses a prompt-based approach to generate docstrings and markdown documents, providing clear instructions and examples for the desired outcomes.
+## Important Notes
+- The OpenAI API key is required for using the `ChatCompletion` to generate responses.
+- The system and user messages are used to prompt the ChatCompletion for generating docstrings and creating a readme document.
 
 ## Known Issues and Future Improvements
-
-- The code currently assumes the availability of the OpenAI API Key as an environment variable. A more flexible approach to providing the API key could be considered.
-- Improved handling of errors and exception scenarios could be added to enhance the robustness of the class.
+No known issues or future improvements have been mentioned for the codebase.
