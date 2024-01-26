@@ -1,60 +1,50 @@
-# CodeCleaner
+# Code Cleaner
 
-The **CodeCleaner** class is designed to assist in modifying and documenting Python code using OpenAI's ChatCompletion for generating docstrings and creating a README markdown document.
-
-## Functionality
-The CodeCleaner class provides the following functionalities:
-1. Cleaning and modifying Python code:
-    - Reading the content of a Python file.
-    - Generating docstrings for the provided Python code and writing the modified code to a new file.
-2. Creating a README markdown document for the provided Python code.
+The `CodeCleaner` class provides functionality to clean and enhance Python code. It uses the OpenAI ChatCompletion model to generate docstrings for Python code and to create README markdown documents. The code makes use of the OpenAI API and the `tiktoken` library for tokenization.
 
 ## Dependencies
-In order to run the code successfully, the following dependencies are required:
+- OpenAI API key
 - `openai` library
-- Environmental variable `OPENAI_API_KEY` set to provide the OpenAI API key
+- `tiktoken` library
+- Python 3.6 or higher
 
-## Usage
-1. **Reading Python File**:
-    ```python
-    openai_code_cleaner.read_python_file(file_path)
-    ```
-    This function reads the content of a Python file specified by `file_path`.
-
-2. **Convert to Docstrings**:
-    ```python
-    openai_code_cleaner.convert_to_docstrings(python_output_file_path)
-    ```
-    This function generates docstrings for the provided Python code and writes the modified code to a new file specified by `python_output_file_path`.
-
-3. **Convert to Markdown**:
-    ```python
-    openai_code_cleaner.convert_to_markdown(readme_path)
-    ```
-    This function generates a README markdown document for the provided Python code and writes it to a file specified by `readme_path`.
-
-### Example:
+## How to Use
+1. Initialize the `CodeCleaner` object with the OpenAI API key.
 ```python
-from CodeCleaner import CodeCleaner
-from pathlib import Path
+openai_code_cleaner = CodeCleaner(api_key="YOUR_OPENAI_API_KEY")
+```
 
-openai_code_cleaner = CodeCleaner()
+2. Read a Python file into the `code` attribute.
+```python
 file_path = Path("app.py")
-
-# Read python file
 openai_code_cleaner.read_python_file(file_path)
+```
 
-# Convert to docstrings only
+3. Convert the code to include docstrings and write it to a new Python file.
+```python
 openai_code_cleaner.convert_to_docstrings(python_output_file_path="app-docstring.py")
+```
 
-# Create a readme document
+4. Create a README markdown document from the code.
+```python
 openai_code_cleaner.read_python_file(file_path="app-docstring.py")
 openai_code_cleaner.convert_to_markdown(readme_path="README.md")
 ```
 
-## Important Notes
-- The OpenAI API key is required for using the `ChatCompletion` to generate responses.
-- The system and user messages are used to prompt the ChatCompletion for generating docstrings and creating a readme document.
+## Configuration Options
+- The encoding name can be customized in the `num_tokens_from_string` method.
+- The system message for creating readme and docstring generation can be modified in the respective prompt methods.
 
-## Known Issues and Future Improvements
-No known issues or future improvements have been mentioned for the codebase.
+## Important Design Decisions
+- The code uses the OpenAI ChatCompletion model to enhance and clean Python code by generating docstrings and creating README markdown documents.
+- It leverages the `tiktoken` library for tokenization and the `pathlib` library for file path handling.
+
+## Known Limitations
+- The code assumes that the input Python file and the output file paths are valid.
+- It may not handle complex Python code structures or formatting.
+
+## Future Improvements
+- Error handling and robust file handling for different edge cases could be improved.
+- Additional options for customization, such as specifying the ChatCompletion model, could be added.
+
+By following the provided steps, you can use the `CodeCleaner` to enhance and clean Python code while creating corresponding documentation effortlessly.
