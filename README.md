@@ -1,52 +1,47 @@
 # OpenAI Code Cleaner
 
-The provided code is a Python class `CodeCleaner` designed to utilize OpenAI's ChatCompletion model for two main functionalities:
-1. Converting Python code to docstrings with the ability to add comments.
-2. Generating a README markdown document based on the provided Python code.
+This code provides a `CodeCleaner` class that uses OpenAI's language model to generate docstrings for Python code and create a Markdown document for the provided code. It uses the GPT-3.5 language model to interact with the OpenAI chat completion API to perform these tasks.
 
-## Dependencies
-- `openai` library: This code relies on the `openai` library to interact with OpenAI's ChatCompletion model.
-- `os`: Used for environment variable retrieval.
-- `pathlib`: Utilized for handling file paths.
-- `tiktoken`: Dependency for token encoding used by the `num_tokens_from_string` method.
+## Prerequisites
+- Python environment
+- `openai` package
+- `tiktoken` package
+- OpenAI API key set as `OPENAI_API_KEY` environment variable
 
 ## Usage
-To use the `CodeCleaner` class, the user needs to instantiate an object and then call the relevant methods. Below are the main methods available:
 
-### 1. Convert Python Code to Docstrings
-1. Initialize the `CodeCleaner` object.
+1. Initialize the `CodeCleaner` class with an optional API key:
     ```python
     openai_code_cleaner = CodeCleaner(api_key="YOUR_OPENAI_API_KEY")
     ```
-2. Read the content of a Python file using `read_python_file` method.
+
+2. Read the content of a Python file and store it in the `CodeCleaner` instance:
     ```python
     file_path = Path("app.py")
     openai_code_cleaner.read_python_file(file_path)
     ```
-3. Convert the code to docstrings and write to a Python file using `convert_to_docstrings` method.
+
+3. Generate docstrings for the provided Python code and save the updated code to a new file:
     ```python
-    openai_code_cleaner.convert_to_docstrings(python_output_file_path="app-docstring.py")
+    openai_code_cleaner.create_docstrings(python_output_file_path="app-docstring.py")
     ```
 
-### 2. Generate README Markdown Document
-1. Read the content of the Python file previously modified with docstrings.
+4. Create a Markdown document for the provided Python code and save it to a file:
     ```python
     openai_code_cleaner.read_python_file(file_path="app-docstring.py")
-    ```
-2. Convert the code to a markdown document and write to a file using `convert_to_markdown` method.
-    ```python
-    openai_code_cleaner.convert_to_markdown(readme_path="README.md")
+    openai_code_cleaner.create_markdown_document(readme_path="README.md")
     ```
 
 ## Configuration Options
-Users can customize the behavior of the `CodeCleaner` class by modifying the following aspects:
-- OpenAI API Key: This can be provided directly as a parameter when instantiating the `CodeCleaner` object or set as an environment variable `OPENAI_API_KEY`.
+- The `CodeCleaner` class can be initialized with a custom OpenAI API key.
+- Custom instructions for creating a Markdown document or generating docstrings and comments can be specified using the `markdown_document_prompt` or `docstring_generator_prompt` methods, respectively.
 
-## Design Choices
-The code utilizes the `openai` library to interact with OpenAI's ChatCompletion model, allowing for the conversion of Python code to docstrings and the generation of a README markdown document.
+## Important Design Decisions
+- The class uses OpenAI's GPT-3.5 language model to interact with the OpenAI chat completion API to generate docstrings and create Markdown documents.
+- It determines the number of tokens in a text string using the `tiktoken` package to configure the chat completion model's `max_tokens` parameter appropriately.
 
-## Known Limitations and Future Improvements
-- Known Issues: The code currently assumes the presence of an OpenAI API key and does not handle cases when the API key is invalid or not provided.
-- Future Improvements: It would be beneficial to incorporate error handling and improve the user experience by providing clearer feedback regarding any issues encountered during the code conversion process.
+## Known Issues and Future Improvements
+- The current implementation may have limitations in handling complex code structures or specific programming language features.
+- Future improvements may include handling different programming languages, improving code understanding, and providing more customization options for docstring generation.
 
-By following the provided examples and guidelines, developers can efficiently utilize the `CodeCleaner` class to enhance the documentation and readability of Python code, as well as automate the creation of README markdown documents.
+By following the instructions and using the provided examples, developers can effectively utilize the `CodeCleaner` class to generate docstrings and create Markdown documents for Python code.

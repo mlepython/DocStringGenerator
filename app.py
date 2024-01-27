@@ -93,6 +93,7 @@ class CodeCleaner():
             self.system_message = """Your task will be to generate docstrings and add comments to a provided python code.
             You will also spcifiy in the define function statement for each input the desired type and the desired output type for all functions.
             Do not modify the code. It MUST stay in its current form. Insert the docstrings for each function and add some short comments if necessary.
+            Remove any uncessary comments.
             IF there are any parent classes that are inherited using super(), use ':meth:`MyBaseClass.some_method`' 
             For the output format, SHOW THE COMPLETE CODE with the added docstrings and comments:
             ```python
@@ -113,16 +114,55 @@ class CodeCleaner():
             area = length * width
             return area
             """
+            
+    def get_files(self, directory_path, extensions=[".py", ".html", ".js", ".css", ".md"]):
+        gitignore_contents, gitignore_contents_path = read_contents_from_gitignore(directory_path)
+        files = []
+        for extension in extensions:
+            files.extend(directory_path.glob(f'*{extension}'))
+        subdirectories = [subdir for subdir in directory_path.iterdir() if subdir.is_dir()]
+        # make a list of all files to be updated/cleaned with openai unless the file/directory is listed in the .gitignore
+        for subdir in subdirectories:
+            if str(subdir.name) not in gitignore_contents:
+                for extension in extensions:
+                    for file in subdir.glob(f'*{extension}'):
+                        if all(str(file) not in str(gitignore) for gitignore in gitignore_contents_path):
+                            files.append(file)
+        print("Files in directory")
+        for file in files:
+            print(file)
+        return files
+
+def read_contents_from_gitignore(directory):
+    try:
+        with open(directory/".gitignore", 'r') as file:
+            contents = file.readlines()
+            contents_abs_path = []
+            for index, line in enumerate(contents):
+                contents[index] = line.strip()
+                contents_abs_path.append(directory/contents[index])
+        return contents, contents_abs_path
+    except FileNotFoundError:
+        print(f"The file {directory} does not exist.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+
 
 if __name__ == "__main__":
     openai_code_cleaner = CodeCleaner()
-    file_path = Path("app.py")
+    file_path = Path(r"C:\Users\mike_\OneDrive\Documents\OpenAI and Python\OpenAI-WebApp\app.py")
+    openai_code_cleaner.get_files(file_path.parent)
+    # openai_code_cleaner.get_files_with_suffixes(file_path.parent)
+    # read_contents_from_gitignore(file_path.parent)
+    
     # read python file
-    openai_code_cleaner.read_python_file(file_path)
+    # openai_code_cleaner.read_python_file(file_path)
     
     # Example: Convert to docstrings only
-    openai_code_cleaner.create_docstrings(python_output_file_path="app-docstring.py")
+    # openai_code_cleaner.create_docstrings(python_output_file_path=file_path.parent/"app-docstring.py")
 
     # Example: Create a readme document
-    openai_code_cleaner.read_python_file(file_path="app-docstring.py")
-    openai_code_cleaner.create_markdown_document(readme_path="README.md")
+    # openai_code_cleaner.read_python_file(file_path=file_path.parent/"app-docstring.py")
+    # openai_code_cleaner.create_markdown_document(readme_path=file_path.parent/"README.md")
+    # print(Path(r"C:\Users\mike_\OneDrive\Documents\OpenAI and Python\OpenAI-WebApp\templates\index2.html") == Path(r"C:\Users\mike_\OneDrive\Documents\OpenAI and Python\OpenAI-WebApp\templates\index2.html"))
