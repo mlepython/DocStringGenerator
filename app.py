@@ -9,6 +9,10 @@ class CodeCleaner():
         self.model_name = "gpt-3.5-turbo-1106"
         self.api_key = api_key or os.getenv("OPENAI_API_KEY")
         self.code = ""
+        self.js = ""
+        self.html = ""
+        self.md = ""
+        self.css = ""
 
         if not self.api_key:
             raise ValueError("API key is required. Set the OPENAI_API_KEY environment variable.")
@@ -114,8 +118,12 @@ class CodeCleaner():
             area = length * width
             return area
             """
-            
+
+    def generic_prompt(self, custom_instructions=None):
+
+        pass
     def get_files(self, directory_path, extensions=[".py", ".html", ".js", ".css", ".md"]):
+        # get the contents from the gitigore file
         gitignore_contents, gitignore_contents_path = read_contents_from_gitignore(directory_path)
         files = []
         for extension in extensions:
@@ -128,10 +136,18 @@ class CodeCleaner():
                     for file in subdir.glob(f'*{extension}'):
                         if all(str(file) not in str(gitignore) for gitignore in gitignore_contents_path):
                             files.append(file)
-        print("Files in directory")
-        for file in files:
-            print(file)
+
         return files
+    def files_for_modifiction(self, file_dir):
+        if file_dir.is_dir():
+            files = self.get_files(directory_path=file_dir)
+            print("Files in directory")
+            for file in files:
+                print(file.suffix)
+        else:
+            file = file_dir
+
+        pass
 
 def read_contents_from_gitignore(directory):
     try:
@@ -151,18 +167,18 @@ def read_contents_from_gitignore(directory):
 
 if __name__ == "__main__":
     openai_code_cleaner = CodeCleaner()
-    file_path = Path(r"C:\Users\mike_\OneDrive\Documents\OpenAI and Python\OpenAI-WebApp\app.py")
-    openai_code_cleaner.get_files(file_path.parent)
+    file_path = Path(r"C:\Users\mike_\OneDrive\Documents\OpenAI and Python\DocStringGenerator\app.py")
+    # openai_code_cleaner.get_files(file_path.parent)
+    # openai_code_cleaner.files_for_modifiction(file_path.parent)
     # openai_code_cleaner.get_files_with_suffixes(file_path.parent)
-    # read_contents_from_gitignore(file_path.parent)
+    
     
     # read python file
-    # openai_code_cleaner.read_python_file(file_path)
+    openai_code_cleaner.read_python_file(file_path)
     
     # Example: Convert to docstrings only
-    # openai_code_cleaner.create_docstrings(python_output_file_path=file_path.parent/"app-docstring.py")
+    openai_code_cleaner.create_docstrings(python_output_file_path=file_path.parent/"app-docstring.py")
 
     # Example: Create a readme document
-    # openai_code_cleaner.read_python_file(file_path=file_path.parent/"app-docstring.py")
-    # openai_code_cleaner.create_markdown_document(readme_path=file_path.parent/"README.md")
-    # print(Path(r"C:\Users\mike_\OneDrive\Documents\OpenAI and Python\OpenAI-WebApp\templates\index2.html") == Path(r"C:\Users\mike_\OneDrive\Documents\OpenAI and Python\OpenAI-WebApp\templates\index2.html"))
+    openai_code_cleaner.read_python_file(file_path=file_path.parent/"app-docstring.py")
+    openai_code_cleaner.create_markdown_document(readme_path=file_path.parent/"README.md")
