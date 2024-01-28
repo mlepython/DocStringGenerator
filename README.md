@@ -1,55 +1,76 @@
-# OpenAI Code Cleaner
+# OpenAI Code Cleaner README
 
-The provided code is a Python script for cleaning and processing code files using the OpenAI GPT-3.5-Turbo and GPT-4 language models. It leverages the OpenAI API to generate docstrings for Python files and create markdown documentation. The script also estimates the cost of processing based on the number of tokens in the input text.
+## Overview
 
-## Functionality Overview
+The `CodeCleaner` class provides a tool to clean and process code files using OpenAI's models such as GPT-4. It is designed to read code from files, interact with the OpenAI API to process the content, and write the results back to the filesystem. This tool can generate documentation such as docstrings for Python files or README documents in Markdown format.
 
-The code provides a `CodeCleaner` class with methods for reading, processing, and writing code files using the OpenAI GPT models. It supports generating Python docstrings and creating markdown documentation for given input files. It also includes methods for extracting file information such as token count and cost estimates.
+Key features:
+- Reads code files from disk.
+- Sends content to the OpenAI API with customized system messages for different file types.
+- Writes processed code or documentation back to specified output files.
+- Filters files based on extensions and `.gitignore` entries.
 
-## Dependencies and Prerequisites
+## Dependencies
 
-- `openai`: The `OpenAI` library is required to interact with the OpenAI GPT models.
-- `Path` from `pathlib`: Used for working with file paths.
-- `tiktoken`: Used to get encoding details for tokenization.
-- `PrettyTable`: Used for creating tabular output for displaying file details.
+To run the `CodeCleaner`, the following dependencies are required:
+- Python 3.x
+- `openai` package: Official OpenAI Python client library.
+- `tiktoken`: A library to calculate the cost of tokens.
+- `prettytable`: A library to present tables in a visually appealing format.
+- `default_prompts`: A module containing default system messages for OpenAI API calls (assumed to be provided as part of the codebase).
 
-## Usage and Key Method Calls
+To install the required packages, you can use pip:
 
-1. **Instantiating the `CodeCleaner` Class**
-
-```python
-openai_code_cleaner = CodeCleaner()
+```bash
+pip install openai tiktoken prettytable
 ```
 
-2. **Processing Files in a Directory**
+Also, make sure you have an OpenAI API key and have it set as the `OPENAI_API_KEY` environment variable or pass it to the `CodeCleaner` constructor.
 
-The `files_for_modification` method retrieves files from a directory, generates system messages based on file types, and displays a table of token count and cost estimates.
+## Usage
 
-```python
-file_dir = Path("path_to_directory")
-openai_code_cleaner.files_for_modification(file_dir)
-```
-
-3. **Processing a Single File**
-
-The `process_file` method reads a file, calls the OpenAI model, and writes the processed content to a specified output file.
+First, import and instantiate the `CodeCleaner`:
 
 ```python
-file_path = Path("path_to_input_file")
-output_file_path = Path("path_to_output_file")
-openai_code_cleaner.process_file(file_path, output_file_path)
+from pathlib import Path
+from code_cleaner import CodeCleaner
+
+# Instantiate with API key if not set in environment
+api_key = "your_openai_api_key"  # Optional if OPENAI_API_KEY is set
+code_cleaner = CodeCleaner(api_key=api_key)
+
+# Specify the file paths
+input_file_path = Path("path/to/code.py")
+output_file_path = Path("path/to/output.md")  # or output.py for docstrings
+
+# Use the `process_file` method to convert the file and write the output
+code_cleaner.process_file(file=input_file_path, ouput_file_path=output_file_path)
 ```
 
-## Design Decisions and Considerations
+The `process_file` method takes a file path to read from and an output file path to write the results to. It determines the type of processing based on the output file's suffix (e.g., `.py` for Python docstrings, `.md` for Markdown documents).
 
-- The code uses the `tiktoken` library to tokenize input text and estimate the cost based on the number of tokens. It also handles requirements for different model variations such as GPT-3.5-Turbo and GPT-4.
-- A `PrettyTable` is utilized to present file details in a tabular format, improving the user experience.
+## Configuration
 
-## Future Improvements and Limitations
+The `CodeCleaner` uses several configurations that you may want to customize:
+- `system_message`: This message provides contextual information to the OpenAI model.
+- `extensions`: A list of file extensions that `CodeCleaner` will consider for processing.
+- The `.gitignore` file is respected to exclude files from being processed.
 
-### Future Improvements
-- Additional error handling and user input validation can be incorporated to enhance robustness.
-- Supporting more file formats for processing, such as JSON, YAML, and others.
+## Design Decisions
 
-### Limitations
-- The code currently has limited support for custom instructions during the OpenAI model call, which could limit flexibility for certain use cases. This could be improved by allowing users to provide custom instructions for processing.
+- Utilization of OpenAI's models: The `CodeCleaner` leverages powerful AI models to parse and generate documentation for code.
+- Flexible design: Works by processing the content of files based on their extension, allowing future expansion to support more file types.
+- Cost estimation: Calculates the number of tokens and their cost before making an API call, aiding in managing API usage.
+
+## Limitations and Future Improvements
+
+- **Known Issues**: Currently, there is limited error handling, especially for edge cases where file reading or writing may fail.
+- **Performance**: Processing large files or directories may be slow as each file is handled serially; parallel processing could be implemented for better performance.
+- **Future Improvements**:
+  - Improved error handling and logging.
+  - A command-line interface (CLI) to ease usage for users unfamiliar with Python scripts.
+  - A configuration file to eliminate the need for hardcoding certain values like the model name and extensions.
+
+## Contribution
+
+Contributors are welcome to enhance the `CodeCleaner` by adding new features, improving the code structure, or fixing bugs. Please provide documentation for any new functionalities and make sure to follow the project's coding standards.

@@ -10,8 +10,8 @@ client = OpenAI()
 
 class CodeCleaner():
     def __init__(self, api_key=None) -> None:
-        self.model_name = "gpt-3.5-turbo-1106"
-        # self.model_name = "gpt-4-1106-preview"
+        # self.model_name = "gpt-3.5-turbo-1106"
+        self.model_name = "gpt-4-1106-preview"
         self.api_key = api_key or os.getenv("OPENAI_API_KEY")
         self.custom_instructions = None
         self.file_contents = ""
