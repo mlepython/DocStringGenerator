@@ -1,50 +1,54 @@
-# CodeCleaner
+# Code Cleaner
 
-The `CodeCleaner` class provides functionality to read, modify, and create documentation for Python code using OpenAI's ChatCompletion API.
+The `CodeCleaner` class is a tool for generating docstrings for Python code and creating a README markdown document using the OpenAI API. It also provides functionality to read and modify Python code files.
 
-## Purpose and Functionality
-The `CodeCleaner` class is designed to:
-- Read the content of a Python file and store it within the class object.
-- Generate docstrings for the provided Python code and write the updated code to a new file.
-- Create a README markdown document for the provided code.
+## Functionality
 
-## Dependencies and Prerequisites
-To run the code successfully, the following dependencies are required:
-- `openai` package
-- `tiktoken` package
-- OpenAI API key set in the environment variable OPENAI_API_KEY
+The `CodeCleaner` class offers the following functionality:
+- Initializing the class with an API key for the OpenAI API
+- Reading Python files and storing their contents
+- Generating docstrings for the provided Python code and writing the modified code to a new file
+- Creating a README markdown document for the provided code and writing it to a file
+- Retrieving a list of files with specified extensions in a directory
+- Reading the contents of the .gitignore file in a specified directory
+
+## Prerequisites
+
+In order to use the `CodeCleaner` class, you need:
+- Python installed on your system
+- OpenAI API key
+- Required dependencies: `openai`, `os`, `pathlib`, `tiktoken`
 
 ## Usage
-1. Initialize the `CodeCleaner` class by providing the OpenAI API key or ensuring it is available in the environment variable OPENAI_API_KEY
-    ```python
-    openai_code_cleaner = CodeCleaner(api_key="your_openai_api_key")
-    ```
 
-2. Read the content of a Python file and store it within the class object
-    ```python
-    file_path = Path("path_to_python_file")
-    openai_code_cleaner.read_python_file(file_path)
-    ```
+### Initialization
+```python
+openai_code_cleaner = CodeCleaner(api_key="your_openai_api_key")
+```
 
-3. Generate docstrings for the provided Python code and write the updated code to a new file
-    ```python
-    python_output_file_path = Path("output_file_path")
-    openai_code_cleaner.create_docstrings(python_output_file_path)
-    ```
+### Reading Python File
+```python
+file_path = Path("/path/to/python/file.py")  # Specify the path to the Python file
+openai_code_cleaner.read_python_file(file_path)
+```
 
-4. Create a README markdown document for the provided code
-    ```python
-    readme_path = Path("readme_file_path")
-    openai_code_cleaner.create_markdown_document(readme_path)
-    ```
+### Generate Docstrings
+```python
+# Provide the path to write the modified Python code with added docstrings
+openai_code_cleaner.create_docstrings(python_output_file_path="/path/to/output/file.py")
+```
 
-## Important Details
-- The `CodeCleaner` class utilizes the OpenAI ChatCompletion API to generate responses based on input messages.
-- Custom instructions can be provided for generating README markdown documents or docstrings and comments for Python code.
-- The class provides functions to retrieve files with specific extensions within a directory and read the contents of a .gitignore file.
+### Create README Document
+```python
+# Provide the path to write the README markdown document
+openai_code_cleaner.create_markdown_document(readme_path="/path/to/readme.md")
+```
 
-## Known Issues and Future Improvements
-- The code currently does not handle exceptions related to the OpenAI API responses.
-- Future improvements could include enhancing error handling and adding more customization options for generating documentation.
+## Known Limitations and Future Improvements
 
-By using the `CodeCleaner` class, developers can efficiently generate docstrings, comments, and README markdown documents for their Python code.
+- The code is tightly coupled with the OpenAI API, so changes to the API may require updates to the code.
+- Improved error handling and validation can be added to enhance the robustness of the class.
+- Additional customization options for generating docstrings and README documents may be beneficial.
+
+---
+The `CodeCleaner` class provides a convenient way to automate the generation of docstrings and README documents using the OpenAI API, offering potential time-saving benefits in code documentation and project management.
