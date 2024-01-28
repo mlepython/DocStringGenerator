@@ -43,23 +43,15 @@ class CodeCleaner():
         )
         return response.choices[0].message.content
 
-    def run_openai(self, messages: list):
-            max_tokens, _ = self.num_tokens_from_messages(str(messages))
-            response = client.chat.completions.create(
-                model=self.model_name,
-                messages=messages,
-                max_tokens=int(max_tokens*1.5)
-            )
-            return response.choices[0].message.content
-
-    def openai_messages(self, system_message, user_message):
-        prompt = [
-        {'role': 'system', 'content': system_message},
-        {'role': 'user', 'content': user_message}
-        ]
-        return prompt
+    # def openai_messages(self, system_message, user_message):
+    #     prompt = [
+    #     {'role': 'system', 'content': system_message},
+    #     {'role': 'user', 'content': user_message}
+    #     ]
+    #     return prompt
 
     def read_file(self, file_path):
+        print(f"Reading file {file_path}")
         try:
             with open(file_path, 'r') as file:
                 self.file_contents = file.read()
@@ -76,39 +68,22 @@ class CodeCleaner():
 
     def process_file(self, file, ouput_file_path):
         # creates system message
-        self.system_message_prompt(file_path==file)
+        self.system_message_prompt(ouput_file_path)
         # read in file
         self.read_file(file_path=file)
         # call openai and set user message to file contents
         # TODO add some more usability for user_message to allow for custom instruction
         results = self.call_openai(user_message=self.file_contents)
-        if file.suffix == ".py":
+        if ouput_file_path.suffix == ".py":
             new_code = results.split("```python",1)[-1][::-1].split("```",1)[-1][::-1]
             self.write_file(file_path=ouput_file_path, content=new_code)
             print(f'Python code successfully written to: {ouput_file_path}')
-        elif file.suffix == ".md":
+        elif ouput_file_path.suffix == ".md":
             self.write_file(file_path=ouput_file_path, content=results)
             print(f'Readme successfully written to: {ouput_file_path}')
         else:
             pass
-
-    def create_docstrings(self, python_output_file_path):
-        self.docstring_generator_prompt()
-        results = self.run_openai(messages=self.openai_messages(system_message=self.system_message, user_message=self.file_contents))
-
-        new_code = results.split("```python",1)[-1][::-1].split("```",1)[-1][::-1]
-
-        self.write_file(file_path=python_output_file_path, content=new_code)
-        print(f'Python code successfully written to: {python_output_file_path}')
-
-    def create_markdown_document(self, readme_path):
-        self.markdown_document_prompt()
-
-        results = self.run_openai(messages=self.openai_messages(system_message=self.system_message, user_message=self.file_contents))
-        self.write_file(file_path=readme_path, content=results)
-
-        print(f'Readme successfully written to: {readme_path}')
-
+    
     def system_message_prompt(self, file_path):
         if not self.custom_instructions:
             print(file_path)
@@ -120,58 +95,6 @@ class CodeCleaner():
                 self.system_message = default_prompts.markdown_document_prompt()
             else:
                 self.system_message = ""
-
-    def markdown_document_prompt(self, custom_instructions=None):
-        if custom_instructions:
-            self.system_message = custom_instructions
-        else:
-            self.system_message = """
-            Your task is to create a README markdown document for the provided code. Here are some suggestions:
-            Create a Markdown document describing the functionality, usage, and important details of the following code. Assume the target audience is developers who may need to understand, use, or contribute to the codebase.
-            Instructions:
-
-            Provide a title
-            Provide a brief overview of the code's purpose and functionality.
-            Include any dependencies or prerequisites needed to run the code successfully.
-            Explain how to use the code, including relevant function/method calls or key parameters.
-            If applicable, provide code examples or use cases to illustrate the code in action.
-            Include information on any configuration options or settings that users may need to customize.
-            Highlight important design decisions, algorithms, or patterns used in the code.
-            Mention any known issues, limitations, or future improvements for the codebase.
-            Use proper Markdown formatting for headings, code blocks, lists, and any other relevant elements.
-            """
-
-    def docstring_generator_prompt(self, custom_instructions=None):
-        if custom_instructions:
-            self.system_message = custom_instructions
-        else:
-            self.system_message = """Your task will be to generate docstrings and add comments to a provided python code.
-            You will also spcifiy in the define function statement for each input the desired type and the desired output type for all functions.
-            Do not modify the code. It MUST stay in its current form. Insert the docstrings for each function and add some short comments if necessary.
-            Remove any uncessary comments.
-            IF there are any parent classes that are inherited using super(), use ':meth:`MyBaseClass.some_method`' 
-            For the output format, SHOW THE COMPLETE CODE with the added docstrings and comments:
-            ```python
-            <python code>
-            ```
-            Here is an example of a docstring for a function:
-            def calculate_area_of_rectangle(length, width):
-            '''
-            Calculate the area of a rectangle.
-
-            Parameters:
-            - length (float): The length of the rectangle.
-            - width (float): The width of the rectangle.
-
-            Returns:
-            float: The area of the rectangle.
-            '''
-            area = length * width
-            return area
-            """
-
-
-        pass
 
     def get_files(self, directory_path, extensions=[".py", ".html", ".js", ".css", ".md"]):
         # get the contents from the gitigore file
@@ -197,11 +120,9 @@ class CodeCleaner():
             for index, file in enumerate(files):
                 self.system_message_prompt(file)
                 if file.suffix == ".py":
-                    # self.docstring_generator_prompt()
                     self.read_file(file_path=file)
                     tokens, cost = self.num_tokens_from_messages(self.system_message+self.file_contents)
                 elif file.suffix == ".md":
-                    # self.markdown_document_prompt()
                     self.read_file(file_path=file)
                     tokens, cost = self.num_tokens_from_messages(self.system_message+self.file_contents)
                 else:
@@ -241,7 +162,8 @@ if __name__ == "__main__":
     
     # Example: Convert to docstrings only
     # openai_code_cleaner.create_docstrings(python_output_file_path=file_path.parent/"app-docstring.py")
-    openai_code_cleaner.process_file(file=file_path, ouput_file_path=file_path.parent/"app-docstring.py")
+    # openai_code_cleaner.process_file(file=file_path, ouput_file_path=file_path.parent/"app-docstring.py")
     # Example: Create a readme document
     # openai_code_cleaner.read_file(file_path=file_path.parent/"app-docstring.py")
     # openai_code_cleaner.create_markdown_document(readme_path=file_path.parent/"README.md")
+    openai_code_cleaner.process_file(file=file_path, ouput_file_path=file_path.parent/"README.md")

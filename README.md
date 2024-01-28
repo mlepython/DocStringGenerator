@@ -1,54 +1,43 @@
-# Code Cleaner
+# Code Cleaner README
 
-The `CodeCleaner` class is a tool for generating docstrings for Python code and creating a README markdown document using the OpenAI API. It also provides functionality to read and modify Python code files.
+## Overview
+The `CodeCleaner` is a Python class designed to clean and modify code files using OpenAI's GPT-3.5 language model. It reads code from specified files, processes it using the GPT-3.5 model, and writes the modified code back to the files. The class also provides functionality to generate docstrings and markdown documents for Python files.
 
-## Functionality
-
-The `CodeCleaner` class offers the following functionality:
-- Initializing the class with an API key for the OpenAI API
-- Reading Python files and storing their contents
-- Generating docstrings for the provided Python code and writing the modified code to a new file
-- Creating a README markdown document for the provided code and writing it to a file
-- Retrieving a list of files with specified extensions in a directory
-- Reading the contents of the .gitignore file in a specified directory
-
-## Prerequisites
-
-In order to use the `CodeCleaner` class, you need:
-- Python installed on your system
-- OpenAI API key
-- Required dependencies: `openai`, `os`, `pathlib`, `tiktoken`
+## Dependencies
+- `openai` (OpenAI's GPT-3.5 API)
+- `tiktoken` (for tokenization)
+- `prettytable` (for tabular display)
 
 ## Usage
+1. Instantiate the `CodeCleaner` class, optionally passing the OpenAI API key as a parameter.
+    ```python
+    openai_code_cleaner = CodeCleaner(api_key="YOUR_OPENAI_API_KEY")
+    ```
 
-### Initialization
-```python
-openai_code_cleaner = CodeCleaner(api_key="your_openai_api_key")
-```
+2. Call the `files_for_modifiction` method to get information about the files in a specified directory.
+    ```python
+    file_path = Path("/path/to/your/directory")
+    openai_code_cleaner.files_for_modifiction(file_path)
+    ```
+    This method prints a table with information such as file names, token counts, and cost estimates.
 
-### Reading Python File
-```python
-file_path = Path("/path/to/python/file.py")  # Specify the path to the Python file
-openai_code_cleaner.read_python_file(file_path)
-```
+3. Process a specific file using the `process_file` method.
+    ```python
+    file_path = Path("/path/to/your/file.py")
+    output_file_path = Path("/path/to/your/output/file.py")
 
-### Generate Docstrings
-```python
-# Provide the path to write the modified Python code with added docstrings
-openai_code_cleaner.create_docstrings(python_output_file_path="/path/to/output/file.py")
-```
+    openai_code_cleaner.process_file(file=file_path, ouput_file_path=output_file_path)
+    ```
+    This method reads the file, processes it using OpenAI, and writes the modified output to the specified output file. It also handles different file types such as Python and Markdown documents.
 
-### Create README Document
-```python
-# Provide the path to write the README markdown document
-openai_code_cleaner.create_markdown_document(readme_path="/path/to/readme.md")
-```
+## Configuration Options
+- The `model_name` attribute in the `__init__` method can be modified to use a different OpenAI model, such as "gpt-4-1106-preview".
+- The `num_tokens_from_messages` method has the option to change the encoding name for tokenization.
 
-## Known Limitations and Future Improvements
+## Important Design Decisions
+- The class uses OpenAI's GPT-3.5 language model for code modification and generation.
+- It provides a flexible way to process different file types and handle custom instructions.
 
-- The code is tightly coupled with the OpenAI API, so changes to the API may require updates to the code.
-- Improved error handling and validation can be added to enhance the robustness of the class.
-- Additional customization options for generating docstrings and README documents may be beneficial.
-
----
-The `CodeCleaner` class provides a convenient way to automate the generation of docstrings and README documents using the OpenAI API, offering potential time-saving benefits in code documentation and project management.
+## Known Issues and Future Improvements
+- The code currently lacks complete implementation for the single file input scenario in the `files_for_modifiction` method, which can be improved upon.
+- Future improvements may include enhancing user interaction and providing more customization options for code modification.

@@ -19,8 +19,8 @@ def docstring_generator_prompt(custom_instructions=None):
     return"""Your task will be to generate docstrings and add comments to a provided python code.
         You will also spcifiy in the define function statement for each input the desired type and the desired output type for all functions.
         Do not modify the code. It MUST stay in its current form. Insert the docstrings for each function and add some short comments if necessary.
-        Remove any uncessary comments.
-        IF there are any parent classes that are inherited using super(), use ':meth:`MyBaseClass.some_method`' 
+        Remove all blocks of code that have been commented out.
+
         For the output format, SHOW THE COMPLETE CODE with the added docstrings and comments:
         ```python
         <python code>
