@@ -86,7 +86,6 @@ class CodeCleaner():
     
     def system_message_prompt(self, file_path):
         if not self.custom_instructions:
-            print(file_path)
             if file_path.suffix == ".py":
                 print('Python File')
                 self.system_message = default_prompts.docstring_generator_prompt()
@@ -116,7 +115,7 @@ class CodeCleaner():
         if file_dir.is_dir():
             table.field_names = ["index", "File Name", "Token Count", "Cost Estimate"]
             files = self.get_files(directory_path=file_dir)
-            print("Files in directory", file_dir)
+            print("Files in directory: ", file_dir)
             for index, file in enumerate(files):
                 self.system_message_prompt(file)
                 if file.suffix == ".py":
