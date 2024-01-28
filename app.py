@@ -150,7 +150,7 @@ def read_contents_from_gitignore(directory):
 
 if __name__ == "__main__":
     openai_code_cleaner = CodeCleaner()
-    file_path = Path(r"C:\Users\mike_\OneDrive\Documents\OpenAI and Python\DocStringGenerator\app.py")
+    file_path = Path(r"C:\Users\mike_\OneDrive\Documents\OpenAI and Python\ImageAnalysisOPENAI\app.py")
     # openai_code_cleaner.get_files(file_path.parent)
     openai_code_cleaner.files_for_modifiction(file_path.parent)
     # openai_code_cleaner.get_files_with_suffixes(file_path.parent)
