@@ -1,26 +1,55 @@
-The code provided appears to be a Python script that utilizes the OpenAI GPT-3 (and potentially GPT-4) model to perform various tasks related to code cleaning and modification. The functionality includes reading and processing files, interacting with the OpenAI API, and generating new code based on the input received.
+# OpenAI Code Cleaner
 
-Here's a brief breakdown of the code's main components:
+The provided code is a Python script for cleaning and processing code files using the OpenAI GPT-3.5-Turbo and GPT-4 language models. It leverages the OpenAI API to generate docstrings for Python files and create markdown documentation. The script also estimates the cost of processing based on the number of tokens in the input text.
 
-1. **Dependencies**:
-   - The script has dependencies on the `openai`, `tiktoken`, and `prettytable` Python modules. These need to be installed before running the code.
+## Functionality Overview
 
-2. **Usage**:
-   - The `CodeCleaner` class provides methods for reading and processing files, interacting with the OpenAI API, and system messages prompt handling.
+The code provides a `CodeCleaner` class with methods for reading, processing, and writing code files using the OpenAI GPT models. It supports generating Python docstrings and creating markdown documentation for given input files. It also includes methods for extracting file information such as token count and cost estimates.
 
-3. **Code Examples**:
-   - The main script instantiates a `CodeCleaner` object and demonstrates its usage by reading and processing a specific file.
+## Dependencies and Prerequisites
 
-4. **Design Decisions**:
-   - The script uses the OpenAI API for generating code modifications and incorporates logic to handle different file types (e.g., .py, .md).
+- `openai`: The `OpenAI` library is required to interact with the OpenAI GPT models.
+- `Path` from `pathlib`: Used for working with file paths.
+- `tiktoken`: Used to get encoding details for tokenization.
+- `PrettyTable`: Used for creating tabular output for displaying file details.
 
-5. **Known Issues and Limitations**:
-   - The script may have limitations or potential issues related to file handling and OpenAI API interaction.
+## Usage and Key Method Calls
 
-6. **Future Improvements**:
-   - Potential future improvements could include handling additional file types, refining the OpenAI interaction, and improving error handling.
+1. **Instantiating the `CodeCleaner` Class**
 
-7. **Contributing**:
-   - The script doesn't explicitly mention contributing guidelines, bug reporting, or pull requests.
+```python
+openai_code_cleaner = CodeCleaner()
+```
 
-Given the nature of the code, it seems to focus on leveraging OpenAI's capabilities to automate code modification tasks. If you have specific questions or need further assistance, feel free to ask!
+2. **Processing Files in a Directory**
+
+The `files_for_modification` method retrieves files from a directory, generates system messages based on file types, and displays a table of token count and cost estimates.
+
+```python
+file_dir = Path("path_to_directory")
+openai_code_cleaner.files_for_modification(file_dir)
+```
+
+3. **Processing a Single File**
+
+The `process_file` method reads a file, calls the OpenAI model, and writes the processed content to a specified output file.
+
+```python
+file_path = Path("path_to_input_file")
+output_file_path = Path("path_to_output_file")
+openai_code_cleaner.process_file(file_path, output_file_path)
+```
+
+## Design Decisions and Considerations
+
+- The code uses the `tiktoken` library to tokenize input text and estimate the cost based on the number of tokens. It also handles requirements for different model variations such as GPT-3.5-Turbo and GPT-4.
+- A `PrettyTable` is utilized to present file details in a tabular format, improving the user experience.
+
+## Future Improvements and Limitations
+
+### Future Improvements
+- Additional error handling and user input validation can be incorporated to enhance robustness.
+- Supporting more file formats for processing, such as JSON, YAML, and others.
+
+### Limitations
+- The code currently has limited support for custom instructions during the OpenAI model call, which could limit flexibility for certain use cases. This could be improved by allowing users to provide custom instructions for processing.
