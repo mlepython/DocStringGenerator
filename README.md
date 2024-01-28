@@ -1,43 +1,26 @@
-# Code Cleaner README
+The code provided appears to be a Python script that utilizes the OpenAI GPT-3 (and potentially GPT-4) model to perform various tasks related to code cleaning and modification. The functionality includes reading and processing files, interacting with the OpenAI API, and generating new code based on the input received.
 
-## Overview
-The `CodeCleaner` is a Python class designed to clean and modify code files using OpenAI's GPT-3.5 language model. It reads code from specified files, processes it using the GPT-3.5 model, and writes the modified code back to the files. The class also provides functionality to generate docstrings and markdown documents for Python files.
+Here's a brief breakdown of the code's main components:
 
-## Dependencies
-- `openai` (OpenAI's GPT-3.5 API)
-- `tiktoken` (for tokenization)
-- `prettytable` (for tabular display)
+1. **Dependencies**:
+   - The script has dependencies on the `openai`, `tiktoken`, and `prettytable` Python modules. These need to be installed before running the code.
 
-## Usage
-1. Instantiate the `CodeCleaner` class, optionally passing the OpenAI API key as a parameter.
-    ```python
-    openai_code_cleaner = CodeCleaner(api_key="YOUR_OPENAI_API_KEY")
-    ```
+2. **Usage**:
+   - The `CodeCleaner` class provides methods for reading and processing files, interacting with the OpenAI API, and system messages prompt handling.
 
-2. Call the `files_for_modifiction` method to get information about the files in a specified directory.
-    ```python
-    file_path = Path("/path/to/your/directory")
-    openai_code_cleaner.files_for_modifiction(file_path)
-    ```
-    This method prints a table with information such as file names, token counts, and cost estimates.
+3. **Code Examples**:
+   - The main script instantiates a `CodeCleaner` object and demonstrates its usage by reading and processing a specific file.
 
-3. Process a specific file using the `process_file` method.
-    ```python
-    file_path = Path("/path/to/your/file.py")
-    output_file_path = Path("/path/to/your/output/file.py")
+4. **Design Decisions**:
+   - The script uses the OpenAI API for generating code modifications and incorporates logic to handle different file types (e.g., .py, .md).
 
-    openai_code_cleaner.process_file(file=file_path, ouput_file_path=output_file_path)
-    ```
-    This method reads the file, processes it using OpenAI, and writes the modified output to the specified output file. It also handles different file types such as Python and Markdown documents.
+5. **Known Issues and Limitations**:
+   - The script may have limitations or potential issues related to file handling and OpenAI API interaction.
 
-## Configuration Options
-- The `model_name` attribute in the `__init__` method can be modified to use a different OpenAI model, such as "gpt-4-1106-preview".
-- The `num_tokens_from_messages` method has the option to change the encoding name for tokenization.
+6. **Future Improvements**:
+   - Potential future improvements could include handling additional file types, refining the OpenAI interaction, and improving error handling.
 
-## Important Design Decisions
-- The class uses OpenAI's GPT-3.5 language model for code modification and generation.
-- It provides a flexible way to process different file types and handle custom instructions.
+7. **Contributing**:
+   - The script doesn't explicitly mention contributing guidelines, bug reporting, or pull requests.
 
-## Known Issues and Future Improvements
-- The code currently lacks complete implementation for the single file input scenario in the `files_for_modifiction` method, which can be improved upon.
-- Future improvements may include enhancing user interaction and providing more customization options for code modification.
+Given the nature of the code, it seems to focus on leveraging OpenAI's capabilities to automate code modification tasks. If you have specific questions or need further assistance, feel free to ask!
